@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Box</title>
+    <!-- رابط مكتبة Font Awesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* إعادة تعيين بعض الأنماط الأساسية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0e0e0e;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* تنسيق الرأس */
+        header {
+            background-color: #1f1f1f;
+            color: #fff;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            margin: auto;
+        }
+
+        header h1 {
+            font-size: 28px;
+            letter-spacing: 1px;
+            color: #ff6347;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        nav ul li a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ff6347;
+            transition: width .3s;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+
+        nav ul li a:hover::after,
+        nav ul li a.active::after {
+            width: 100%;
+        }
+
+        /* تنسيق الأقسام الرئيسية */
+        main {
+            padding: 100px 20px 60px 20px; /* 100px لتعويض ارتفاع الرأس */
+            transition: all 0.5s ease;
+        }
+
+        section {
+            display: none; /* إخفاء جميع الأقسام بشكل افتراضي */
+            animation: fadeIn 0.5s forwards;
+        }
+
+        section.active {
+            display: block; /* عرض القسم النشط */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            color: #ff6347;
+            position: relative;
+        }
+
+        section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: #ff6347;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        /* تنسيق شبكة المحتويات */
+        .controls, .sub-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sub-controls {
+            display: none; /* مخفية بشكل افتراضي */
+        }
+
+        .sub-controls button {
+            background-color: #e5533d;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .sub-controls button:hover,
+        .sub-controls button.active {
+            background-color: #e5533d;
+        }
+
+        /* Spinner */
+        #spinnerMovies, #spinnerSeries, #spinnerEpisodes {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            color: #ff6347;
+        }
+
+        /* شبكة الأفلام والمسلسلات والحلقات */
+        #itemsGridMovies, #itemsGridSeries, #itemsGridEpisodes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 85px;
+        }
+
+        .item, .episode-item {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 220px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .item:hover, .episode-item:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        .item img, .episode-item img {
+            width: 100%;
+            height: 330px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .item:hover img, .episode-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .item .item-name, .episode-item .episode-number {
+            text-align: center;
+            padding: 15px;
+            font-size: 20px;
+            color: #fff;
+            background-color: #2c2c2c;
+            position: relative;
+        }
+
+        .item .item-name::before {
+            content: '\f0fc'; /* أيقونة الفيلم من Font Awesome */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 8px;
+            color: #ff6347;
+        }
+
+        /* تنسيق التذييل */
+        footer {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            text-align: center;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.5);
+        }
+
+        footer p {
+            font-size: 16px;
+        }
+
+        /* تنسيق النافذة المنبثقة للفيديو */
+        #videoModal {
+            display: none; /* مخفية بشكل افتراضي */
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+            animation: fadeInModal 0.5s forwards;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content-video {
+            background-color: #2c2c2c;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #444;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close-video {
+            color: #ff6347;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        .close-video:hover,
+        .close-video:focus {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* تنسيق النافذة المنبثقة للمعلومات */
+        .modal {
+            display: none; /* مخفية بشكل افتراضي */
+            position: fixed; /* ثابتة في الشاشة */
+            z-index: 2000; /* أعلى من العناصر الأخرى */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* تمكين التمرير إذا كان المحتوى كبيرًا */
+            background-color: rgba(0,0,0,0.9); /* خلفية شفافة مظلمة */
+            animation: fadeInModal 0.5s forwards;
+        }
+
+        .modal-content {
+            background-color: #2c2c2c;
+            margin: 5% auto; /* 5% من الأعلى وتركز أفقيًا */
+            padding: 30px;
+            border: 1px solid #444;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 10px;
+            position: relative;
+            animation: slideDown 0.5s forwards;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #ff6347;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .modal p {
+            font-size: 18px;
+            color: #ccc;
+            text-align: center;
+        }
+
+        /* تنسيق قائمة الحلقات */
+        #episodes {
+            display: none;
+        }
+
+        #episodes h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+            color: #ff6347;
+        }
+
+        #episodes .back-button {
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #episodes .back-button:hover {
+            background-color: #e5533d;
+        }
+
+        .episode {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            width: 220px;
+        }
+
+        .episode:hover {
+            background-color: #333333;
+        }
+
+        .episode img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .episode .episode-number {
+            font-size: 18px;
+            color: #ff6347;
+        }
+
+        /* تنسيق تواصل معنا */
+        #contact form {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        #contact form div {
+            margin-bottom: 15px;
+        }
+
+        #contact form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        #contact form input,
+        #contact form textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #contact form button {
+            background-color: #ff6347;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #contact form button:hover {
+            background-color: #e5533d;
+        }
+
+        /* شاشات أكبر من 1024px (أجهزة اللابتوب) */
+        @media (max-width: 1024px) {
+            .item, .episode-item, .episode {
+                width: 45%;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            header {
+                padding: 15px 0;
+            }
+
+            nav ul li {
+                margin-left: 15px;
+            }
+        }
+
+        /* شاشات متوسطة مثل التابلت (عرض أقل من 768px) */
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                flex-direction: column;
+                margin-top: 10px;
+            }
+
+            nav ul li {
+                margin: 8px 0;
+            }
+
+            .modal-content, .modal-content-video {
+                width: 90%;
+            }
+
+            .episode {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .episode img {
+                width: 100%;
+                height: auto;
+            }
+
+            .sub-controls button {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .item, .episode-item {
+                width: 48%;
+                height: auto;
+            }
+        }
+
+        /* شاشات الهواتف الصغيرة (أقل من 480px) */
+        @media (max-width: 480px) {
+            .item, .episode-item, .episode {
+                width: 90%;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            nav ul li a {
+                font-size: 16px;
+            }
+
+            section h2 {
+                font-size: 26px;
+            }
+
+            .modal h3 {
+                font-size: 20px;
+            }
+
+            .modal p {
+                font-size: 16px;
+            }
+
+            .episode img {
+                height: 120px;
+            }
+
+            footer p {
+                font-size: 14px;
+            }
+
+            .container {
+                width: 100%;
+                padding: 0 10px;
+            }
+
+            /* تحسين عرض الأزرار في الهاتف */
+            .sub-controls {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .sub-controls button {
+                display: block;
+                width: 90%;
+                margin: 5px auto;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- رأس الموقع -->
+    <header>
+        <div class="container">
+            <h1>Screen Box</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" data-section="movies" class="active">أفلام</a></li>
+                    <li><a href="#" data-section="series">مسلسلات</a></li>
+                    <li><a href="#" data-section="contact" style="display: none !important; ">تواصل معنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- قسم العرض الرئيسي -->
+    <main>
+        <!-- قسم الأفلام -->
+        <section id="movies" class="active">
+            <h2>الأفلام المميزة</h2>
+            <!-- أزرار اختيار اللغة داخل قسم الأفلام -->
+            <div class="sub-controls">
+                <button id="btnArabicMovies" class="active">عربي</button> ||
+                <button id="btnForeignerMovies">أجنبي</button>
+            </div>
+            <!-- الاسبينر -->
+            <div id="spinnerMovies">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+            </div>
+            <!-- شبكة الأفلام -->
+            <div id="itemsGridMovies" class="cards-container">
+                <!-- الأفلام ستظهر هنا ديناميكيًا -->
+            </div>
+        </section>
+
+        <!-- قسم المسلسلات -->
+        <section id="series">
+            <h2>المسلسلات المميزة</h2>
+            <!-- أزرار اختيار اللغة داخل قسم المسلسلات -->
+            <div class="sub-controls">
+                <button id="btnArabicSeries" class="active">عربي</button> || 
+                <button id="btnForeignerSeries">أجنبي</button>
+            </div>
+            <!-- الاسبينر -->
+            <div id="spinnerSeries">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+            </div>
+            <!-- شبكة المسلسلات -->
+            <div id="itemsGridSeries" class="cards-container">
+                <!-- المسلسلات ستظهر هنا ديناميكيًا -->
+            </div>
+        </section>
+
+        <!-- قسم الحلقات -->
+        <section id="episodes" style="display: none;">
+            <h2>الحلقات</h2>
+            <button class="back-button">رجوع</button>
+            <!-- الاسبينر للحلقات -->
+            <div id="spinnerEpisodes">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+            </div>
+            <!-- شبكة الحلقات -->
+            <div id="itemsGridEpisodes" class="cards-container">
+                <!-- الحلقات ستظهر هنا ديناميكيًا -->
+            </div>
+        </section>
+
+        <!-- قسم تواصل معنا -->
+        <section id="contact">
+            <h2>تواصل معنا</h2>
+            <form>
+                <div>
+                    <label for="name">الاسم:</label>
+                    <input type="text" id="name" name="name" placeholder="أدخل اسمك" required>
+                </div>
+                <div>
+                    <label for="email">البريد الإلكتروني:</label>
+                    <input type="email" id="email" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+                <div>
+                    <label for="message">الرسالة:</label>
+                    <textarea id="message" name="message" rows="5" placeholder="أدخل رسالتك" required></textarea>
+                </div>
+                <button type="submit"><i class="fas fa-paper-plane"></i> إرسال</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- تذييل الموقع -->
+    <footer>
+        <p>&copy; 2025 Screen Box. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <!-- النافذة المنبثقة للفيديو -->
+    <div id="videoModal" class="modal">
+        
+        <div class="modal-content-video">
+            <span class="close-video">&times;</span>
+            <video id="videoPlayer" width="100%" controls>
+                <source id="videoSource" src="" type="video/mp4">
+                متصفحك لا يدعم تشغيل الفيديو.
+            </video>
+            <input type="range" id="videoTimeline" value="0" style="width: 100%; margin-top: 10px;">
+        </div>
+    </div>
+
+    <!-- سكريبت JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const apiEndpoint = 'https://38ub5bmmv5.execute-api.us-east-1.amazonaws.com/prod/upload'; // تأكد من أن هذا هو رابط الـ API الصحيح
+
+            let selectedCategory = 'films'; // تعيين الفئة الافتراضية
+            let selectedLanguage = 'Arabic'; // تعيين اللغة الافتراضية
+
+            // التعامل مع التنقل بين الأقسام
+            const navLinks = document.querySelectorAll('nav ul li a');
+            const sections = document.querySelectorAll('main section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('data-section');
+
+                    // إزالة الفئة النشطة من جميع الروابط
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    // إضافة الفئة النشطة للرابط الحالي
+                    link.classList.add('active');
+
+                    // إخفاء جميع الأقسام
+                    sections.forEach(section => section.style.display = 'none');
+                    // عرض القسم المستهدف
+                    document.getElementById(target).style.display = 'block';
+
+                    // تحديد الفئة واللغة بناءً على القسم
+                    if (target === 'movies') {
+                        selectedCategory = 'films';
+                        selectedLanguage = 'Arabic'; // اللغة الافتراضية للأفلام
+                        displayMoviesLanguageButtons();
+                        // مسح المحتويات السابقة
+                        document.getElementById('itemsGridMovies').innerHTML = '';
+                        // إعادة تعيين الأزرار
+                        setActiveLanguageButton(document.getElementById('btnArabicMovies'), document.getElementById('btnForeignerMovies'));
+                        // جلب الأفلام العربية تلقائيًا
+                        fetchMovies();
+                    } else if (target === 'series') {
+                        selectedCategory = 'series';
+                        selectedLanguage = 'Arabic'; // اللغة الافتراضية للمسلسلات
+                        displaySeriesLanguageButtons();
+                        // مسح المحتويات السابقة
+                        document.getElementById('itemsGridSeries').innerHTML = '';
+                        // إعادة تعيين الأزرار
+                        setActiveLanguageButton(document.getElementById('btnArabicSeries'), document.getElementById('btnForeignerSeries'));
+                        // جلب المسلسلات العربية تلقائيًا
+                        fetchSeries();
+                    } else if (target === 'contact') {
+                        // لا حاجة لجلب المحتويات
+                    }
+                });
+            });
+
+            // التعامل مع النوافذ المنبثقة للفيديو
+            const videoModal = document.getElementById("videoModal");
+            const closeVideoBtn = document.querySelector(".close-video");
+
+            // التعامل مع إغلاق النافذة المنبثقة للفيديو
+            closeVideoBtn.addEventListener('click', () => {
+                closeModal();
+            });
+
+            // إغلاق النافذة عند النقر خارج المحتوى
+            window.addEventListener('click', (e) => {
+                if (e.target == videoModal) {
+                    closeModal();
+                }
+            });
+
+            // التعامل مع إرسال النموذج
+            const contactForm = document.querySelector('#contact form');
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('شكراً لتواصلك معنا!');
+                contactForm.reset();
+            });
+
+            // دالة عرض أزرار اختيار اللغة داخل قسم الأفلام
+            function displayMoviesLanguageButtons() {
+                const subControls = document.querySelector('#movies .sub-controls');
+                subControls.style.display = 'block';
+                document.getElementById('itemsGridMovies').innerHTML = '';
+            }
+
+            // دالة عرض أزرار اختيار اللغة داخل قسم المسلسلات
+            function displaySeriesLanguageButtons() {
+                const subControls = document.querySelector('#series .sub-controls');
+                subControls.style.display = 'block';
+                document.getElementById('itemsGridSeries').innerHTML = '';
+            }
+
+            // إضافة مستمعين للأحداث على أزرار اختيار اللغة في الأفلام
+            const btnArabicMovies = document.getElementById('btnArabicMovies');
+            const btnForeignerMovies = document.getElementById('btnForeignerMovies');
+
+            btnArabicMovies.addEventListener('click', () => {
+                selectedLanguage = 'Arabic';
+                setActiveLanguageButton(btnArabicMovies, btnForeignerMovies);
+                fetchMovies();
+            });
+
+            btnForeignerMovies.addEventListener('click', () => {
+                selectedLanguage = 'Foreigner';
+                setActiveLanguageButton(btnForeignerMovies, btnArabicMovies);
+                fetchMovies();
+            });
+
+            // إضافة مستمعين للأحداث على أزرار اختيار اللغة في المسلسلات
+            const btnArabicSeries = document.getElementById('btnArabicSeries');
+            const btnForeignerSeries = document.getElementById('btnForeignerSeries');
+
+            btnArabicSeries.addEventListener('click', () => {
+                selectedLanguage = 'Arabic';
+                setActiveLanguageButton(btnArabicSeries, btnForeignerSeries);
+                fetchSeries();
+            });
+
+            btnForeignerSeries.addEventListener('click', () => {
+                selectedLanguage = 'Foreigner';
+                setActiveLanguageButton(btnForeignerSeries, btnArabicSeries);
+                fetchSeries();
+            });
+
+            // دالة لتعيين الفئة النشطة على الأزرار
+            function setActiveLanguageButton(activeBtn, inactiveBtn) {
+                activeBtn.classList.add('active');
+                inactiveBtn.classList.remove('active');
+            }
+
+            // دالة جلب الأفلام
+            async function fetchMovies() {
+                try {
+                    // عرض الاسبينر
+                    document.getElementById('spinnerMovies').style.display = 'block';
+                    // مسح المحتويات السابقة
+                    document.getElementById('itemsGridMovies').innerHTML = '';
+
+                    const response = await fetch(apiEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            category: selectedCategory,
+                            language: selectedLanguage
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Raw API response (Movies):', data);
+
+                    let parsedData;
+                    if (data.body) {
+                        try {
+                            parsedData = JSON.parse(data.body);
+                            console.log('Parsed body (Movies):', parsedData);
+                        } catch (e) {
+                            console.error('Error parsing JSON from Movies body:', e);
+                            document.getElementById('itemsGridMovies').innerHTML = '<p>تنسيق البيانات غير صالح.</p>';
+                            return;
+                        }
+                    } else {
+                        parsedData = data;
+                        console.log('Parsed data (Movies):', parsedData);
+                    }
+
+                    if (parsedData.items) {
+                        displayItems(parsedData.items, 'Movies');
+                        document.getElementById('itemsGridMovies').style.display = 'flex';
+                    } else {
+                        console.error('No items found in the Movies response.');
+                        document.getElementById('itemsGridMovies').innerHTML = '<p>لا توجد أفلام لعرضها.</p>';
+                        document.getElementById('itemsGridMovies').style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error fetching movies:', error);
+                    document.getElementById('itemsGridMovies').innerHTML = '<p>حدث خطأ أثناء جلب الأفلام.</p>';
+                    document.getElementById('itemsGridMovies').style.display = 'block';
+                } finally {
+                    // إخفاء الاسبينر
+                    document.getElementById('spinnerMovies').style.display = 'none';
+                }
+            }
+
+            // دالة جلب المسلسلات
+            async function fetchSeries() {
+                try {
+                    // عرض الاسبينر
+                    document.getElementById('spinnerSeries').style.display = 'block';
+                    // مسح المحتويات السابقة
+                    document.getElementById('itemsGridSeries').innerHTML = '';
+
+                    const response = await fetch(apiEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            category: selectedCategory,
+                            language: selectedLanguage
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Raw API response (Series):', data);
+
+                    let parsedData;
+                    if (data.body) {
+                        try {
+                            parsedData = JSON.parse(data.body);
+                            console.log('Parsed body (Series):', parsedData);
+                        } catch (e) {
+                            console.error('Error parsing JSON from Series body:', e);
+                            document.getElementById('itemsGridSeries').innerHTML = '<p>تنسيق البيانات غير صالح.</p>';
+                            return;
+                        }
+                    } else {
+                        parsedData = data;
+                        console.log('Parsed data (Series):', parsedData);
+                    }
+
+                    if (parsedData.items) {
+                        displayItems(parsedData.items, 'Series');
+                        document.getElementById('itemsGridSeries').style.display = 'flex';
+                    } else {
+                        console.error('No items found in the Series response.');
+                        document.getElementById('itemsGridSeries').innerHTML = '<p>لا توجد مسلسلات لعرضها.</p>';
+                        document.getElementById('itemsGridSeries').style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error fetching series:', error);
+                    document.getElementById('itemsGridSeries').innerHTML = '<p>حدث خطأ أثناء جلب المسلسلات.</p>';
+                    document.getElementById('itemsGridSeries').style.display = 'block';
+                } finally {
+                    // إخفاء الاسبينر
+                    document.getElementById('spinnerSeries').style.display = 'none';
+                }
+            }
+
+            // دالة جلب الحلقات
+            function fetchEpisodes(series) {
+                try {
+                    // عرض الاسبينر
+                    document.getElementById('spinnerEpisodes').style.display = 'block';
+                    // مسح المحتويات السابقة
+                    document.getElementById('itemsGridEpisodes').innerHTML = '';
+
+                    // استخدام 'videos' كمصدر للحلقات
+                    const videos = series.videos || [];
+
+                    if (videos.length === 0) {
+                        throw new Error('No episodes found for this series.');
+                    }
+
+                    displayEpisodes(videos, series.logo);
+                    document.getElementById('episodes').style.display = 'block';
+                    document.getElementById('itemsGridEpisodes').style.display = 'flex';
+
+                    // إخفاء الأقسام الأخرى
+                    document.getElementById('movies').style.display = 'none';
+                    document.getElementById('series').style.display = 'none';
+                    document.getElementById('contact').style.display = 'none';
+                } catch (error) {
+                    console.error('Error fetching episodes:', error);
+                    document.getElementById('itemsGridEpisodes').innerHTML = '<p>حدث خطأ أثناء جلب الحلقات.</p>';
+                    document.getElementById('itemsGridEpisodes').style.display = 'block';
+                } finally {
+                    // إخفاء الاسبينر
+                    document.getElementById('spinnerEpisodes').style.display = 'none';
+                }
+            }
+
+            // دالة عرض الحلقات
+            function displayEpisodes(videos, seriesLogo) {
+                if (!Array.isArray(videos)) {
+                    console.error('Invalid episodes format:', videos);
+                    document.getElementById('itemsGridEpisodes').innerHTML = '<p>تنسيق الحلقات غير صالح.</p>';
+                    return;
+                }
+
+                const grid = document.getElementById('itemsGridEpisodes');
+                grid.innerHTML = '';
+
+                videos.forEach((video, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'episode';
+
+                    div.onclick = () => openModal(video);
+
+                    div.innerHTML = `
+                        <img src="${seriesLogo}" alt="الحلقة ${index + 1}">
+                        <div class="episode-number">الحلقة ${index + 1}</div>
+                    `;
+                    grid.appendChild(div);
+                });
+            }
+
+            // دالة عرض المحتويات (أفلام أو مسلسلات)
+            function displayItems(items, type) {
+                if (!Array.isArray(items)) {
+                    console.error('Invalid items format:', items);
+                    if (type === 'Movies') {
+                        document.getElementById('itemsGridMovies').innerHTML = '<p>تنسيق المحتويات غير صالح.</p>';
+                    } else if (type === 'Series') {
+                        document.getElementById('itemsGridSeries').innerHTML = '<p>تنسيق المحتويات غير صالح.</p>';
+                    }
+                    return;
+                }
+
+                const grid = type === 'Movies' ? document.getElementById('itemsGridMovies') : document.getElementById('itemsGridSeries');
+                grid.innerHTML = '';
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+
+                    // تحديد السلوك حسب النوع
+                    if (type === 'Series') {
+                        div.onclick = () => fetchEpisodes(item);
+                    } else {
+                        div.onclick = () => openModal(item.videos[0]);
+                    }
+
+                    div.innerHTML = `
+                        <img src="${item.logo}" alt="${item.name}">
+                        <div class="item-name">${item.name}</div>
+                    `;
+                    grid.appendChild(div);
+                });
+            }
+
+            // Modal Functions
+            function openModal(videoUrl) {
+                document.getElementById('videoSource').src = videoUrl;
+                const video = document.getElementById('videoPlayer');
+                video.load();
+                video.play();
+                document.getElementById('videoModal').style.display = 'block';
+            }
+
+            function closeModal() {
+                const video = document.getElementById('videoPlayer');
+                video.pause();
+                document.getElementById('videoModal').style.display = 'none';
+            }
+
+            // تحديث شريط التايملاين
+            const videoElement = document.getElementById('videoPlayer');
+            const timeline = document.getElementById('videoTimeline');
+
+            videoElement.addEventListener('timeupdate', () => {
+                if (videoElement.duration) {
+                    const value = (100 / videoElement.duration) * videoElement.currentTime;
+                    timeline.value = value;
+                }
+            });
+
+            timeline.addEventListener('input', () => {
+                if (videoElement.duration) {
+                    const time = videoElement.duration * (timeline.value / 100);
+                    videoElement.currentTime = time;
+                }
+            });
+
+            // دالة جلب المحتوى الافتراضي عند تحميل الصفحة
+            // يتم تعيين القسم الافتراضي كـ "أفلام" ولغة "عربي"
+            displayMoviesLanguageButtons();
+            fetchMovies();
+
+            // إضافة مستمع لزر العودة في قسم الحلقات
+            const backButton = document.querySelector('#episodes .back-button');
+            backButton.addEventListener('click', () => {
+                document.getElementById('episodes').style.display = 'none';
+                document.getElementById('itemsGridEpisodes').innerHTML = '';
+                document.getElementById('itemsGridEpisodes').style.display = 'none';
+                document.getElementById('movies').style.display = 'none';
+                document.getElementById('series').style.display = 'block';
+                document.getElementById('contact').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
+
+
