@@ -49,9 +49,15 @@
             color: #ff6347;
         }
 
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
         nav ul {
             list-style: none;
             display: flex;
+            margin-right: 20px;
         }
 
         nav ul li {
@@ -84,9 +90,22 @@
             width: 100%;
         }
 
+        /* تنسيق شريط البحث داخل الـ navbar */
+        .search-container {
+            position: relative;
+        }
+
+        .search-container input[type="search"] {
+            padding: 5px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
         /* تنسيق الأقسام الرئيسية */
         main {
-            padding: 100px 20px 60px 20px; /* 100px لتعويض ارتفاع الرأس */
+            padding: 100px 20px 100px 20px; /* 100px لتعويض ارتفاع الرأس */
             transition: all 0.5s ease;
         }
 
@@ -446,6 +465,9 @@
 
         /* شاشات أكبر من 1024px (أجهزة اللابتوب) */
         @media (max-width: 1024px) {
+            main {
+                padding: 224px 20px 121px 20px;
+            }
             .item, .episode-item, .episode {
                 width: 45%;
             }
@@ -456,6 +478,7 @@
 
             header {
                 padding: 15px 0;
+
             }
 
             nav ul li {
@@ -506,12 +529,16 @@
 
         /* شاشات الهواتف الصغيرة (أقل من 480px) */
         @media (max-width: 480px) {
+            header{
+                height: 170px;
+            }
             .item, .episode-item, .episode {
                 width: 90%;
             }
 
             header h1 {
                 font-size: 22px;
+                
             }
 
             nav ul li a {
@@ -555,7 +582,6 @@
                 margin: 5px auto;
             }
         }
-
     </style>
 </head>
 <body>
@@ -563,12 +589,17 @@
     <header>
         <div class="container">
             <h1>Screen Box</h1>
+            <div class="search-container">
+                <input type="search" id="searchInput" placeholder="ابحث عن فيلم أو مسلسل...">
+            </div>
             <nav>
                 <ul>
                     <li><a href="#" data-section="movies" class="active">أفلام</a></li>
                     <li><a href="#" data-section="series">مسلسلات</a></li>
-                    <li><a href="#" data-section="contact" style="display: none !important; ">تواصل معنا</a></li>
+                    <li><a href="#" data-section="contact" style="display: none !important;">تواصل معنا</a></li>
                 </ul>
+                <!-- شريط البحث -->
+
             </nav>
         </div>
     </header>
@@ -653,7 +684,6 @@
 
     <!-- النافذة المنبثقة للفيديو -->
     <div id="videoModal" class="modal">
-        
         <div class="modal-content-video">
             <span class="close-video">&times;</span>
             <video id="videoPlayer" width="100%" controls>
@@ -691,6 +721,9 @@
                     // عرض القسم المستهدف
                     document.getElementById(target).style.display = 'block';
 
+                    // إعادة ضبط شريط البحث عند تغيير القسم
+                    document.getElementById('searchInput').value = '';
+
                     // تحديد الفئة واللغة بناءً على القسم
                     if (target === 'movies') {
                         selectedCategory = 'films';
@@ -717,6 +750,31 @@
                     }
                 });
             });
+
+            // التعامل مع شريط البحث لتصفية العناصر حسب القسم الحالي
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', filterItems);
+
+            function filterItems() {
+                const query = searchInput.value.toLowerCase();
+                let grid;
+                // تحديد القسم النشط (أفلام أو مسلسلات)
+                if(document.getElementById('movies').style.display !== 'none'){
+                     grid = document.getElementById('itemsGridMovies');
+                } else if(document.getElementById('series').style.display !== 'none'){
+                     grid = document.getElementById('itemsGridSeries');
+                } else {
+                     return;
+                }
+                const items = grid.getElementsByClassName('item');
+                Array.from(items).forEach(item => {
+                   const nameElement = item.querySelector('.item-name');
+                   if (nameElement) {
+                       const text = nameElement.textContent.toLowerCase();
+                       item.style.display = text.includes(query) ? 'block' : 'none';
+                   }
+                });
+            }
 
             // التعامل مع النوافذ المنبثقة للفيديو
             const videoModal = document.getElementById("videoModal");
