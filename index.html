@@ -478,7 +478,6 @@
 
             header {
                 padding: 15px 0;
-
             }
 
             nav ul li {
@@ -538,7 +537,6 @@
 
             header h1 {
                 font-size: 22px;
-                
             }
 
             nav ul li a {
@@ -598,8 +596,6 @@
                     <li><a href="#" data-section="series">مسلسلات</a></li>
                     <li><a href="#" data-section="contact" style="display: none !important;">تواصل معنا</a></li>
                 </ul>
-                <!-- شريط البحث -->
-
             </nav>
         </div>
     </header>
@@ -630,7 +626,8 @@
             <!-- أزرار اختيار اللغة داخل قسم المسلسلات -->
             <div class="sub-controls">
                 <button id="btnArabicSeries" class="active">عربي</button> || 
-                <button id="btnForeignerSeries">أجنبي</button>
+                <button id="btnForeignerSeries">أجنبي</button> ||
+                <button id="btnRamadanSeries">رمضان 2025</button>
             </div>
             <!-- الاسبينر -->
             <div id="spinnerSeries">
@@ -741,8 +738,8 @@
                         displaySeriesLanguageButtons();
                         // مسح المحتويات السابقة
                         document.getElementById('itemsGridSeries').innerHTML = '';
-                        // إعادة تعيين الأزرار
-                        setActiveLanguageButton(document.getElementById('btnArabicSeries'), document.getElementById('btnForeignerSeries'));
+                        // إعادة تعيين الأزرار مع الأخذ في الاعتبار زر رمضان
+                        setActiveLanguageButton(document.getElementById('btnArabicSeries'), [document.getElementById('btnForeignerSeries'), document.getElementById('btnRamadanSeries')]);
                         // جلب المسلسلات العربية تلقائيًا
                         fetchSeries();
                     } else if (target === 'contact') {
@@ -814,6 +811,16 @@
                 document.getElementById('itemsGridSeries').innerHTML = '';
             }
 
+            // تعديل دالة تعيين الفئة النشطة لتقبل مصفوفة من الأزرار أو زر واحد
+            function setActiveLanguageButton(activeBtn, inactiveBtns) {
+                activeBtn.classList.add('active');
+                if (Array.isArray(inactiveBtns)) {
+                    inactiveBtns.forEach(btn => btn.classList.remove('active'));
+                } else {
+                    inactiveBtns.classList.remove('active');
+                }
+            }
+
             // إضافة مستمعين للأحداث على أزرار اختيار اللغة في الأفلام
             const btnArabicMovies = document.getElementById('btnArabicMovies');
             const btnForeignerMovies = document.getElementById('btnForeignerMovies');
@@ -833,24 +840,25 @@
             // إضافة مستمعين للأحداث على أزرار اختيار اللغة في المسلسلات
             const btnArabicSeries = document.getElementById('btnArabicSeries');
             const btnForeignerSeries = document.getElementById('btnForeignerSeries');
+            const btnRamadanSeries = document.getElementById('btnRamadanSeries');
 
             btnArabicSeries.addEventListener('click', () => {
                 selectedLanguage = 'Arabic';
-                setActiveLanguageButton(btnArabicSeries, btnForeignerSeries);
+                setActiveLanguageButton(btnArabicSeries, [btnForeignerSeries, btnRamadanSeries]);
                 fetchSeries();
             });
 
             btnForeignerSeries.addEventListener('click', () => {
                 selectedLanguage = 'Foreigner';
-                setActiveLanguageButton(btnForeignerSeries, btnArabicSeries);
+                setActiveLanguageButton(btnForeignerSeries, [btnArabicSeries, btnRamadanSeries]);
                 fetchSeries();
             });
 
-            // دالة لتعيين الفئة النشطة على الأزرار
-            function setActiveLanguageButton(activeBtn, inactiveBtn) {
-                activeBtn.classList.add('active');
-                inactiveBtn.classList.remove('active');
-            }
+            btnRamadanSeries.addEventListener('click', () => {
+                selectedLanguage = 'رمضان 2025';
+                setActiveLanguageButton(btnRamadanSeries, [btnArabicSeries, btnForeignerSeries]);
+                fetchSeries();
+            });
 
             // دالة جلب الأفلام
             async function fetchMovies() {
@@ -957,15 +965,27 @@
                     // مسح المحتويات السابقة
                     document.getElementById('itemsGridSeries').innerHTML = '';
 
+                    // تعديل البايلود بناءً على خيار اللغة
+                    let payload;
+                    if (selectedLanguage === 'رمضان 2025') {
+                        payload = {
+                            category: selectedCategory,
+                            language: 'رمضان 2025',
+                           
+                        };
+                    } else {
+                        payload = {
+                            category: selectedCategory,
+                            language: selectedLanguage
+                        };
+                    }
+
                     const response = await fetch(apiEndpoint, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({
-                            category: selectedCategory,
-                            language: selectedLanguage
-                        })
+                        body: JSON.stringify(payload)
                     });
 
                     if (!response.ok) {
