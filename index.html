@@ -696,7 +696,7 @@
     <!-- سكريبت JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const apiEndpoint = 'https://38ub5bmmv5.execute-api.us-east-1.amazonaws.com/prod/upload'; // تأكد من أن هذا هو رابط الـ API الصحيح
+            const apiEndpoint = 'https://38ub5bmmv5.execute-api.us-east-1.amazonaws.com/prod/movie_fetch'; // تأكد من أن هذا هو رابط الـ API الصحيح
 
             let selectedCategory = 'films'; // تعيين الفئة الافتراضية
             let selectedLanguage = 'Arabic'; // تعيين اللغة الافتراضية
@@ -891,11 +891,12 @@
                     const response = await fetch(apiEndpoint, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                        'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            category: selectedCategory,
-                            language: selectedLanguage
+                        category: selectedCategory,
+                        language: selectedLanguage,
+                        pageUrl: window.location.href
                         })
                     });
 
@@ -971,14 +972,15 @@
                     let payload;
                     if (selectedLanguage === 'رمضان 2025') {
                         payload = {
-                            category: selectedCategory,
-                            language: 'رمضان 2025',
-                           
+                        category: selectedCategory,
+                        language: 'رمضان 2025',
+                        pageUrl: window.location.href
                         };
                     } else {
                         payload = {
-                            category: selectedCategory,
-                            language: selectedLanguage
+                        category: selectedCategory,
+                        language: selectedLanguage,
+                        pageUrl: window.location.href
                         };
                     }
 
