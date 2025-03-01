@@ -275,12 +275,14 @@
             background-color: #2c2c2c;
             margin: 5% auto;
             padding: 20px;
-            border: 1px solid #444;
             width: 80%;
             max-width: 800px;
             border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* ظل خفيف لإضفاء طابع احترافي */
             position: relative;
+            /* تمت إزالة الحد الخارجي ليصبح الإطار أنظف */
         }
+
 
         .close-video {
             color: #ff6347;
@@ -313,16 +315,16 @@
             animation: fadeInModal 0.5s forwards;
         }
 
-        .modal-content {
+        .modal-content-video {
             background-color: #2c2c2c;
-            margin: 5% auto; /* 5% من الأعلى وتركز أفقيًا */
-            padding: 30px;
-            border: 1px solid #444;
+            margin: 5% auto;
+            padding: 20px;
             width: 80%;
-            max-width: 700px;
+            max-width: 800px;
             border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* ظل خفيف لإضفاء طابع احترافي */
             position: relative;
-            animation: slideDown 0.5s forwards;
+            /* تمت إزالة الحد الخارجي ليصبح الإطار أنظف */
         }
 
         @keyframes slideDown {
@@ -683,13 +685,15 @@
     <div id="videoModal" class="modal">
         <div class="modal-content-video">
             <span class="close-video">&times;</span>
-            <video id="videoPlayer" width="100%" controls>
+            <video id="videoPlayer" width="100%" controls controlsList="nodownload" oncontextmenu="return false;">
                 <source id="videoSource" src="" type="video/mp4">
                 متصفحك لا يدعم تشغيل الفيديو.
-            </video>
+            </video>            
             <input type="range" id="videoTimeline" value="0" style="width: 100%; margin-top: 10px;">
         </div>
     </div>
+
+
 
     <!-- سكريبت JavaScript -->
     <script>
