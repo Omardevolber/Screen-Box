@@ -6,8 +6,6 @@
     <title>Screen Box</title>
     <!-- رابط مكتبة Font Awesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- إضافة مكتبة CryptoJS لتشفير AES -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         /* إعادة تعيين بعض الأنماط الأساسية */
         * {
@@ -15,6 +13,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #0e0e0e;
@@ -22,6 +21,7 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
+
         /* تنسيق الرأس */
         header {
             background-color: #1f1f1f;
@@ -34,6 +34,7 @@
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
+
         header .container {
             display: flex;
             justify-content: space-between;
@@ -41,23 +42,28 @@
             width: 90%;
             margin: auto;
         }
+
         header h1 {
             font-size: 28px;
             letter-spacing: 1px;
             color: #ff6347;
         }
+
         nav {
             display: flex;
             align-items: center;
         }
+
         nav ul {
             list-style: none;
             display: flex;
             margin-right: 20px;
         }
+
         nav ul li {
             margin-left: 25px;
         }
+
         nav ul li a {
             color: #e0e0e0;
             text-decoration: none;
@@ -66,6 +72,7 @@
             position: relative;
             cursor: pointer;
         }
+
         nav ul li a::after {
             content: '';
             display: block;
@@ -77,14 +84,17 @@
             bottom: -5px;
             left: 0;
         }
+
         nav ul li a:hover::after,
         nav ul li a.active::after {
             width: 100%;
         }
+
         /* تنسيق شريط البحث داخل الـ navbar */
         .search-container {
             position: relative;
         }
+
         .search-container input[type="search"] {
             padding: 5px 10px;
             font-size: 16px;
@@ -92,22 +102,27 @@
             border-radius: 5px;
             outline: none;
         }
+
         /* تنسيق الأقسام الرئيسية */
         main {
             padding: 100px 20px 100px 20px; /* 100px لتعويض ارتفاع الرأس */
             transition: all 0.5s ease;
         }
+
         section {
             display: none; /* إخفاء جميع الأقسام بشكل افتراضي */
             animation: fadeIn 0.5s forwards;
         }
+
         section.active {
             display: block; /* عرض القسم النشط */
         }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
         section h2 {
             text-align: center;
             margin-bottom: 30px;
@@ -115,6 +130,7 @@
             color: #ff6347;
             position: relative;
         }
+
         section h2::after {
             content: '';
             display: block;
@@ -124,14 +140,17 @@
             margin: 10px auto 0;
             border-radius: 2px;
         }
+
         /* تنسيق شبكة المحتويات */
         .controls, .sub-controls {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .sub-controls {
             display: none; /* مخفية بشكل افتراضي */
         }
+
         .sub-controls button {
             background-color: #e5533d;
             color: #fff;
@@ -142,10 +161,12 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         .sub-controls button:hover,
         .sub-controls button.active {
             background-color: #e5533d;
         }
+
         /* Spinner */
         #spinnerMovies, #spinnerSeries, #spinnerEpisodes {
             display: none;
@@ -156,6 +177,7 @@
             z-index: 2000;
             color: #ff6347;
         }
+
         /* شبكة الأفلام والمسلسلات والحلقات */
         #itemsGridMovies, #itemsGridSeries, #itemsGridEpisodes {
             display: flex;
@@ -164,6 +186,7 @@
             gap: 25px;
             margin-top: 85px;
         }
+
         .item, .episode-item {
             background-color: #1e1e1e;
             border-radius: 10px;
@@ -174,23 +197,28 @@
             cursor: pointer;
             position: relative;
         }
+
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
+
         .item:hover, .episode-item:hover {
             transform: translateY(-15px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.5);
         }
+
         .item img, .episode-item img {
             width: 100%;
             height: 330px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
+
         .item:hover img, .episode-item:hover img {
             transform: scale(1.05);
         }
+
         .item .item-name, .episode-item .episode-number {
             text-align: center;
             padding: 15px;
@@ -199,6 +227,7 @@
             background-color: #2c2c2c;
             position: relative;
         }
+
         .item .item-name::before {
             content: '\f0fc'; /* أيقونة الفيلم من Font Awesome */
             font-family: 'Font Awesome 6 Free';
@@ -206,6 +235,7 @@
             margin-right: 8px;
             color: #ff6347;
         }
+
         /* تنسيق التذييل */
         footer {
             background-color: #1f1f1f;
@@ -217,9 +247,11 @@
             bottom: 0;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.5);
         }
+
         footer p {
             font-size: 16px;
         }
+
         /* تنسيق النافذة المنبثقة للفيديو */
         #videoModal {
             display: none; /* مخفية بشكل افتراضي */
@@ -233,10 +265,12 @@
             background-color: rgba(0,0,0,0.9);
             animation: fadeInModal 0.5s forwards;
         }
+
         @keyframes fadeInModal {
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
         .modal-content-video {
             background-color: #2c2c2c;
             margin: 5% auto;
@@ -248,6 +282,8 @@
             position: relative;
             /* تمت إزالة الحد الخارجي ليصبح الإطار أنظف */
         }
+
+
         .close-video {
             color: #ff6347;
             position: absolute;
@@ -258,11 +294,13 @@
             cursor: pointer;
             display: none;
         }
+
         .close-video:hover,
         .close-video:focus {
             color: #fff;
             text-decoration: none;
         }
+
         /* تنسيق النافذة المنبثقة للمعلومات */
         .modal {
             display: none; /* مخفية بشكل افتراضي */
@@ -276,10 +314,24 @@
             background-color: rgba(0,0,0,0.9); /* خلفية شفافة مظلمة */
             animation: fadeInModal 0.5s forwards;
         }
+
+        .modal-content-video {
+            background-color: #2c2c2c;
+            margin: 5% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* ظل خفيف لإضفاء طابع احترافي */
+            position: relative;
+            /* تمت إزالة الحد الخارجي ليصبح الإطار أنظف */
+        }
+
         @keyframes slideDown {
             from { transform: translateY(-50px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+
         .close {
             color: #ff6347;
             position: absolute;
@@ -289,32 +341,38 @@
             font-weight: bold;
             cursor: pointer;
         }
+
         .close:hover,
         .close:focus {
             color: #fff;
             text-decoration: none;
         }
+
         .modal h3 {
             margin-bottom: 20px;
             font-size: 24px;
             color: #fff;
             text-align: center;
         }
+
         .modal p {
             font-size: 18px;
             color: #ccc;
             text-align: center;
         }
+
         /* تنسيق قائمة الحلقات */
         #episodes {
             display: none;
         }
+
         #episodes h2 {
             text-align: center;
             margin-bottom: 20px;
             font-size: 32px;
             color: #ff6347;
         }
+
         #episodes .back-button {
             background-color: #ff6347;
             color: #fff;
@@ -328,9 +386,11 @@
             margin-left: auto;
             margin-right: auto;
         }
+
         #episodes .back-button:hover {
             background-color: #e5533d;
         }
+
         .episode {
             background-color: #1e1e1e;
             padding: 15px;
@@ -343,19 +403,23 @@
             cursor: pointer;
             width: 220px;
         }
+
         .episode:hover {
             background-color: #333333;
         }
+
         .episode img {
             width: 100%;
             height: 150px;
             object-fit: cover;
             border-radius: 5px;
         }
+
         .episode .episode-number {
             font-size: 18px;
             color: #ff6347;
         }
+
         /* تنسيق تواصل معنا */
         #contact form {
             background-color: #1e1e1e;
@@ -365,15 +429,18 @@
             max-width: 500px;
             margin: auto;
         }
+
         #contact form div {
             margin-bottom: 15px;
         }
+
         #contact form label {
             display: block;
             margin-bottom: 5px;
             color: #fff;
             font-size: 16px;
         }
+
         #contact form input,
         #contact form textarea {
             width: 100%;
@@ -382,6 +449,7 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
         #contact form button {
             background-color: #ff6347;
             color: #fff;
@@ -392,9 +460,11 @@
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
+
         #contact form button:hover {
             background-color: #e5533d;
         }
+
         /* شاشات أكبر من 1024px (أجهزة اللابتوب) */
         @media (max-width: 1024px) {
             main {
@@ -403,49 +473,61 @@
             .item, .episode-item, .episode {
                 width: 45%;
             }
+
             .container {
                 width: 95%;
             }
+
             header {
                 padding: 15px 0;
             }
+
             nav ul li {
                 margin-left: 15px;
             }
         }
+
         /* شاشات متوسطة مثل التابلت (عرض أقل من 768px) */
         @media (max-width: 768px) {
             header .container {
                 flex-direction: column;
                 text-align: center;
             }
+
             nav ul {
                 flex-direction: column;
                 margin-top: 10px;
             }
+
             nav ul li {
                 margin: 8px 0;
             }
+
             .modal-content, .modal-content-video {
                 width: 90%;
             }
+
             .episode {
                 flex-direction: column;
                 align-items: center;
             }
+
             .episode img {
                 width: 100%;
                 height: auto;
             }
+
             .sub-controls button {
                 padding: 8px 12px;
                 font-size: 14px;
             }
+
             .item, .episode-item {
                 width: 48%;
                 height: auto;
             }
         }
+
         /* شاشات الهواتف الصغيرة (أقل من 480px) */
         @media (max-width: 480px) {
             header{
@@ -454,36 +536,46 @@
             .item, .episode-item, .episode {
                 width: 90%;
             }
+
             header h1 {
                 font-size: 22px;
             }
+
             nav ul li a {
                 font-size: 16px;
             }
+
             section h2 {
                 font-size: 26px;
             }
+
             .modal h3 {
                 font-size: 20px;
             }
+
             .modal p {
                 font-size: 16px;
             }
+
             .episode img {
                 height: 120px;
             }
+
             footer p {
                 font-size: 14px;
             }
+
             .container {
                 width: 100%;
                 padding: 0 10px;
             }
+
             /* تحسين عرض الأزرار في الهاتف */
             .sub-controls {
                 flex-direction: column;
                 text-align: center;
             }
+
             .sub-controls button {
                 display: block;
                 width: 90%;
@@ -599,6 +691,8 @@
         </div>
     </div>
 
+
+
     <!-- سكريبت JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -606,14 +700,6 @@
 
             let selectedCategory = 'films'; // تعيين الفئة الافتراضية
             let selectedLanguage = 'Arabic'; // تعيين اللغة الافتراضية
-
-            // المفتاح السري المشترك للتشفير – يجب أن يكون نفسه في جهة الـ Lambda
-            const secretKey = "Aedfdldkjjfkljsdjfl7877d87f7df";
-
-            // دالة لتشفير عنوان الصفحة باستخدام AES عبر CryptoJS
-            function encryptUrl(url) {
-                return CryptoJS.AES.encrypt(url, secretKey).toString();
-            }
 
             // التعامل مع التنقل بين الأقسام
             const navLinks = document.querySelectorAll('nav ul li a');
@@ -776,7 +862,7 @@
                 fetchSeries();
             });
 
-            // دالة جلب الأفلام مع إرسال عنوان الصفحة مشفر في البايلود
+            // دالة جلب الأفلام
             async function fetchMovies() {
                 const storageKey = 'movies_' + selectedLanguage;
                 const storedData = sessionStorage.getItem(storageKey);
@@ -805,13 +891,12 @@
                     const response = await fetch(apiEndpoint, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                        'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            category: selectedCategory,
-                            language: selectedLanguage,
-                            // إرسال عنوان الصفحة مشفر باستخدام الدالة encryptUrl
-                            pageUrl: encryptUrl(window.location.href)
+                        category: selectedCategory,
+                        language: selectedLanguage,
+                        pageUrl: window.location.href
                         })
                     });
 
@@ -857,7 +942,7 @@
                 }
             }
 
-            // دالة جلب المسلسلات مع إرسال عنوان الصفحة مشفر في البايلود
+            // دالة جلب المسلسلات
             async function fetchSeries() {
                 const storageKey = 'series_' + selectedLanguage;
                 const storedData = sessionStorage.getItem(storageKey);
@@ -887,15 +972,15 @@
                     let payload;
                     if (selectedLanguage === 'رمضان 2025') {
                         payload = {
-                            category: selectedCategory,
-                            language: 'رمضان 2025',
-                            pageUrl: encryptUrl(window.location.href)
+                        category: selectedCategory,
+                        language: 'رمضان 2025',
+                        pageUrl: window.location.href
                         };
                     } else {
                         payload = {
-                            category: selectedCategory,
-                            language: selectedLanguage,
-                            pageUrl: encryptUrl(window.location.href)
+                        category: selectedCategory,
+                        language: selectedLanguage,
+                        pageUrl: window.location.href
                         };
                     }
 
